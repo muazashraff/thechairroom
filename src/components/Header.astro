@@ -8,7 +8,7 @@ import CallIcon from "./CallIcon.astro";
     <a href="/" class="header__mark">{business.name}</a>
     <div class="header__actions">
       <a href={business.phoneHref} class="header__call" aria-label={`Call ${business.phoneDisplay}`} title={business.phoneDisplay}>
-        <CallIcon class="header__call-icon" />
+        <CallIcon />
       </a>
       <a href="/book" class="btn btn--primary header__book">Book your chairs</a>
     </div>
@@ -59,11 +59,6 @@ import CallIcon from "./CallIcon.astro";
   .header__call:hover {
     border-color: var(--ink);
     color: var(--accent-text);
-  }
-
-  .header__call-icon {
-    width: 1.125rem;
-    height: 1.125rem;
   }
 
   .header__book {
