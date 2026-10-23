@@ -1,0 +1,77 @@
+---
+import { reviews } from "../data/reviews";
+---
+
+<section class="section section--deep reviews">
+  <div class="wrap">
+    <h2 class="small-caps eyebrow">What customers say</h2>
+    <ul class="reviews__wall">
+      {reviews.map((review, i) => (
+        <li class={`reviews__item ${i % 2 === 1 ? "reviews__item--offset" : ""}`}>
+          <article class="bubble">
+            <p class="bubble__text">{review.text}</p>
+            <p class="bubble__meta">
+              <span class="bubble__name">{review.name}</span>
+              <span class="bubble__time">{review.date}</span>
+              <span class="bubble__ticks" aria-hidden="true">✓✓</span>
+            </p>
+          </article>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .reviews__wall {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  @media (min-width: 48rem) {
+    .reviews__wall {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4) var(--space-3);
+    }
+
+    .reviews__item--offset {
+      margin-top: var(--space-4);
+    }
+  }
+
+  .bubble {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: var(--space-3);
+    max-width: 26rem;
+  }
+
+  .bubble__text {
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  .bubble__meta {
+    margin-top: var(--space-2);
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+  }
+
+  .bubble__name {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .bubble__time {
+    margin-left: auto;
+  }
+
+  .bubble__ticks {
+    color: var(--accent-text);
+  }
+</style>

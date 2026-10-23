@@ -1,0 +1,73 @@
+---
+const groups = [
+  {
+    name: "Weddings & nikkahs",
+    detail: "Mehndi, walima, engagements",
+  },
+  {
+    name: "Birthdays & parties",
+    detail: "Kids' parties, milestone birthdays, baby showers",
+  },
+  {
+    name: "Eid & religious events",
+    detail: "Eid parties, aqiqah, community gatherings",
+  },
+  {
+    name: "Corporate & community",
+    detail: "Office events, charity dinners, school events",
+  },
+];
+---
+
+<section class="section events">
+  <div class="wrap">
+    <h2 class="small-caps eyebrow">Events we do</h2>
+    <ul class="events__list">
+      {groups.map((group) => (
+        <li class="events__row">
+          <h3 class="events__name">{group.name}</h3>
+          <p class="events__detail">{group.detail}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .events__list {
+    border-top: 1px solid var(--rule);
+  }
+
+  .events__row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  @media (min-width: 40rem) {
+    .events__row {
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-3);
+    }
+  }
+
+  .events__name {
+    font-size: clamp(1.375rem, 2.4vw, 1.875rem);
+  }
+
+  .events__detail {
+    color: var(--ink-muted);
+    font-size: 0.9375rem;
+  }
+
+  @media (min-width: 40rem) {
+    .events__detail {
+      text-align: right;
+      max-width: 22rem;
+    }
+  }
+</style>

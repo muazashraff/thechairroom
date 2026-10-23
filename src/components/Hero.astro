@@ -1,0 +1,83 @@
+---
+import RateCard from "./RateCard.astro";
+import SiteImage from "./SiteImage.astro";
+import { business } from "../data/business";
+---
+
+<section class="hero section">
+  <div class="wrap hero__grid">
+    <div class="hero__copy">
+      <h1>
+        Chair &amp; table hire in <em>{business.areas[0]}</em> and <em>{business.areas[1]}</em>.
+      </h1>
+      <p class="hero__lede">
+        Wooden chiavari chairs and 6ft tables for weddings, mehndis, birthdays and everything in
+        between. Collect from {business.collectionTown}, or we'll deliver.
+      </p>
+      <div class="hero__rate">
+        <RateCard />
+      </div>
+      <div class="hero__actions">
+        <a href="/book" class="btn btn--primary">Book your chairs</a>
+        <a href={business.phoneHref} class="text-link hero__call">
+          Call or WhatsApp {business.phoneDisplay}
+        </a>
+      </div>
+    </div>
+    <div class="hero__photo">
+      <SiteImage
+        name="hero/full-setup"
+        alt="The Chair Room's chiavari chairs and tables set up for an event"
+        label="wide shot of a full chair and table setup in a hall, daylight"
+        ratio="4 / 5"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-top: var(--space-4);
+  }
+
+  .hero__grid {
+    display: grid;
+    gap: var(--space-5);
+    align-items: start;
+  }
+
+  @media (min-width: 60rem) {
+    .hero__grid {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: var(--space-6);
+    }
+  }
+
+  .hero__lede {
+    margin-top: var(--space-3);
+    max-width: 32rem;
+    font-size: 1.125rem;
+    color: var(--ink-muted);
+  }
+
+  .hero__rate {
+    margin-top: var(--space-4);
+  }
+
+  .hero__actions {
+    margin-top: var(--space-4);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .hero__call {
+    font-size: 0.9375rem;
+  }
+
+  .hero__photo {
+    border: 1px solid var(--rule);
+    padding: var(--space-1);
+  }
+</style>

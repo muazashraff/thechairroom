@@ -1,0 +1,29 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Hero from "../components/Hero.astro";
+import EventsList from "../components/EventsList.astro";
+import HowItWorks from "../components/HowItWorks.astro";
+import Gallery from "../components/Gallery.astro";
+import Reviews from "../components/Reviews.astro";
+import AreasCovered from "../components/AreasCovered.astro";
+import Faq from "../components/Faq.astro";
+import FinalCta from "../components/FinalCta.astro";
+import { business } from "../data/business";
+---
+
+<BaseLayout title={business.seo.titleHome} description={business.seo.descriptionHome} path="/">
+  <Header />
+  <main id="main">
+    <Hero />
+    <EventsList />
+    <HowItWorks />
+    <Gallery />
+    <Reviews />
+    <AreasCovered />
+    <Faq />
+    <FinalCta />
+  </main>
+  <Footer />
+</BaseLayout>

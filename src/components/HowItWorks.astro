@@ -1,0 +1,55 @@
+---
+const steps = [
+  "Pick your chairs, tables and dates on the booking page.",
+  "Your request opens in WhatsApp — just press send.",
+  "We confirm availability and, if you want delivery, the delivery price.",
+  "Collect from Bradford or we drop them off. Return them after 1–2 days.",
+];
+---
+
+<section class="section section--deep how">
+  <div class="wrap">
+    <h2 class="small-caps eyebrow">How it works</h2>
+    <ol class="how__list">
+      {steps.map((step, i) => (
+        <li class="how__step">
+          <span class="how__number">{i + 1}</span>
+          <p class="how__text">{step}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .how__list {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 60rem) {
+    .how__list {
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-3);
+    }
+  }
+
+  .how__step {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .how__number {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 2.75rem;
+    color: var(--accent-text);
+    line-height: 1;
+  }
+
+  .how__text {
+    max-width: 22rem;
+    color: var(--ink-muted);
+  }
+</style>

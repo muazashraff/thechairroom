@@ -1,0 +1,162 @@
+---
+import SiteImage from "./SiteImage.astro";
+
+const items = [
+  {
+    name: "gallery/full-setup",
+    label: "wide shot of a full chair and table setup in a hall",
+    alt: "Full chair and table setup in a hall",
+    span: "wide",
+    ratio: "16 / 10",
+  },
+  {
+    name: "gallery/row-of-chairs",
+    label: "a neat row of chairs from a low angle",
+    alt: "A neat row of chiavari chairs from a low angle",
+    span: "tall",
+    ratio: "3 / 4",
+  },
+  {
+    name: "gallery/wood-closeup",
+    label: "close-up of the chair back showing the wood",
+    alt: "Close-up of a chiavari chair back showing the wood",
+    span: "small",
+    ratio: "1 / 1",
+  },
+  {
+    name: "gallery/seatpad-closeup",
+    label: "close-up of the grey seat pad",
+    alt: "Close-up of the grey seat pad",
+    span: "small",
+    ratio: "1 / 1",
+  },
+  {
+    name: "gallery/table-setup",
+    label: "a table with a few chairs set up around it",
+    alt: "A 6ft table with chairs set up around it",
+    span: "wide",
+    ratio: "16 / 10",
+  },
+  {
+    name: "gallery/chairs-stacked",
+    label: "chairs stacked and loaded, ready to go",
+    alt: "Chairs stacked and loaded, ready to go",
+    span: "tall",
+    ratio: "3 / 4",
+  },
+];
+---
+
+<section class="section gallery" id="gallery">
+  <div class="wrap">
+    <h2 class="small-caps eyebrow">Gallery</h2>
+    <ul class="gallery__grid">
+      {items.map((item, i) => (
+        <li class={`gallery__item gallery__item--${item.span}`}>
+          <button type="button" class="gallery__trigger" data-lightbox-trigger data-index={i}>
+            <SiteImage name={item.name} alt={item.alt} label={item.label} ratio={item.ratio} />
+          </button>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <dialog class="lightbox" id="gallery-lightbox" aria-label="Photo viewer">
+    <button type="button" class="lightbox__close" data-lightbox-close aria-label="Close photo viewer">
+      Close ✕
+    </button>
+    <div class="lightbox__content">
+      {items.map((item, i) => (
+        <div class="lightbox__pane" data-lightbox-pane={i} hidden>
+          <SiteImage name={item.name} alt={item.alt} label={item.label} ratio="4 / 3" />
+        </div>
+      ))}
+    </div>
+  </dialog>
+</section>
+
+<script>
+  const dialog = document.getElementById("gallery-lightbox") as HTMLDialogElement | null;
+  const triggers = document.querySelectorAll<HTMLButtonElement>("[data-lightbox-trigger]");
+  const panes = document.querySelectorAll<HTMLElement>("[data-lightbox-pane]");
+  const closeBtn = dialog?.querySelector("[data-lightbox-close]");
+
+  function openAt(index: number) {
+    if (!dialog) return;
+    panes.forEach((pane) => {
+      pane.hidden = pane.dataset.lightboxPane !== String(index);
+    });
+    dialog.showModal();
+  }
+
+  triggers.forEach((trigger) => {
+    trigger.addEventListener("click", () => {
+      openAt(Number(trigger.dataset.index ?? 0));
+    });
+  });
+
+  closeBtn?.addEventListener("click", () => dialog?.close());
+
+  dialog?.addEventListener("click", (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+</script>
+
+<style>
+  .gallery__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2);
+  }
+
+  @media (min-width: 48rem) {
+    .gallery__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .gallery__item--wide {
+      grid-column: span 2;
+    }
+
+    .gallery__item--tall {
+      grid-row: span 2;
+    }
+  }
+
+  .gallery__trigger {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    text-align: left;
+  }
+
+  .gallery__trigger:focus-visible {
+    outline-offset: 4px;
+  }
+
+  .lightbox {
+    border: none;
+    border-radius: var(--radius);
+    padding: var(--space-3);
+    background: var(--paper);
+    max-width: 90vw;
+    width: 40rem;
+  }
+
+  .lightbox::backdrop {
+    background: rgba(42, 41, 39, 0.72);
+  }
+
+  .lightbox__close {
+    display: block;
+    margin-left: auto;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 0.4em 0.2em;
+  }
+
+  .lightbox__content {
+    margin-top: var(--space-2);
+  }
+</style>

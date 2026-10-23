@@ -1,0 +1,27 @@
+---
+import { business } from "../data/business";
+---
+
+<section class="section cta">
+  <div class="wrap cta__inner">
+    <h2>Got a date in mind?</h2>
+    <div class="cta__actions">
+      <a href="/book" class="btn btn--primary">Book your chairs</a>
+      <a href={business.phoneHref} class="text-link">Or call {business.phoneDisplay}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta__inner {
+    text-align: left;
+  }
+
+  .cta__actions {
+    margin-top: var(--space-3);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+</style>

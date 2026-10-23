@@ -1,0 +1,86 @@
+---
+const faqs = [
+  {
+    q: "How long is the hire?",
+    a: "1–2 days. Longer hires are fine; we'll confirm the price on WhatsApp.",
+  },
+  {
+    q: "What if I return them late?",
+    a: "PLACEHOLDER: late return policy.",
+  },
+  {
+    q: "What if something gets damaged?",
+    a: "PLACEHOLDER: damage policy and cost per chair/table.",
+  },
+  {
+    q: "Do the chairs need cleaning before return?",
+    a: "PLACEHOLDER: cleaning expectation.",
+  },
+  {
+    q: "How do I confirm my booking?",
+    a: "Send your request through the booking page; we'll reply on WhatsApp to confirm.",
+  },
+  {
+    q: "Do you deliver?",
+    a: "Yes, across West Yorkshire. Delivery & collection is a separate charge, and we'll message you the price.",
+  },
+];
+---
+
+<section class="section section--deep faq">
+  <div class="wrap">
+    <h2 class="small-caps eyebrow">Questions</h2>
+    <div class="faq__list">
+      {faqs.map((item) => (
+        <details class="faq__item">
+          <summary class="faq__question">{item.q}</summary>
+          <p class="faq__answer">{item.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq__list {
+    border-top: 1px solid var(--rule);
+  }
+
+  .faq__item {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .faq__question {
+    padding: var(--space-2) 0;
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-2);
+  }
+
+  .faq__question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__question::after {
+    content: "+";
+    color: var(--accent-text);
+    font-family: var(--font-sans);
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .faq__item[open] .faq__question::after {
+    content: "−";
+  }
+
+  .faq__answer {
+    padding-bottom: var(--space-3);
+    color: var(--ink-muted);
+    max-width: 38rem;
+  }
+</style>
