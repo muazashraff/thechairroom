@@ -1,0 +1,66 @@
+---
+import { business } from "../data/business";
+---
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <div>
+      <p class="footer__mark">{business.name}</p>
+      <p class="footer__strap">{business.strapline}.</p>
+    </div>
+    <nav class="footer__links" aria-label="Footer">
+      <a href={business.phoneHref}>{business.phoneDisplay}</a>
+      <a href={`https://wa.me/${business.whatsappNumber}`}>WhatsApp</a>
+      <a href={business.social.instagram}>Instagram</a>
+      <a href="/terms">Hire terms</a>
+    </nav>
+  </div>
+  <div class="wrap">
+    <p class="footer__copy">© {business.name}, {business.region}.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--rule);
+    padding: var(--space-4) 0 var(--space-3);
+    background: var(--paper-deep);
+  }
+
+  .footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-bottom: var(--space-3);
+  }
+
+  .footer__mark {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+  }
+
+  .footer__strap {
+    color: var(--ink-muted);
+    font-size: 0.9375rem;
+    margin-top: 0.25rem;
+  }
+
+  .footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    font-size: 0.9375rem;
+  }
+
+  .footer__links a:hover {
+    color: var(--accent-text);
+  }
+
+  .footer__copy {
+    color: var(--ink-muted);
+    font-size: 0.8125rem;
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--rule);
+  }
+</style>

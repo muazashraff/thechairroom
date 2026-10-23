@@ -1,0 +1,35 @@
+---
+interface Props {
+  label: string;
+  ratio?: string; // CSS aspect-ratio value, e.g. "4 / 5"
+  class?: string;
+}
+
+const { label, ratio = "4 / 3", class: className = "" } = Astro.props;
+---
+
+<figure class:list={["placeholder-photo", className]} style={`aspect-ratio: ${ratio};`}>
+  <span class="placeholder-photo__label">PHOTO: {label}</span>
+</figure>
+
+<style>
+  .placeholder-photo {
+    margin: 0;
+    width: 100%;
+    background: var(--paper-deep);
+    border: 1px dashed var(--wood);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-3);
+    text-align: center;
+  }
+
+  .placeholder-photo__label {
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-muted);
+    max-width: 18rem;
+  }
+</style>

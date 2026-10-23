@@ -1,0 +1,43 @@
+---
+// Looks for a real photo at src/assets/images/{name}.{jpg,jpeg,png,webp} and
+// renders it through Astro's image pipeline. If it isn't there yet, falls
+// back to a labelled placeholder. Drop a correctly-named file in and this
+// component picks it up automatically — nothing else to change.
+// See PHOTOS.md for the full list of expected file names.
+import { Image } from "astro:assets";
+import PlaceholderPhoto from "./PlaceholderPhoto.astro";
+
+interface Props {
+  name: string; // e.g. "hero/full-setup"
+  alt: string;
+  label: string;
+  ratio?: string;
+  class?: string;
+}
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/**/*.{jpg,jpeg,png,webp}",
+  { eager: true },
+);
+
+const { name, alt, label, ratio = "4 / 3", class: className = "" } = Astro.props;
+
+const match = Object.entries(images).find(([path]) => path.includes(`/images/${name}.`));
+const photo = match?.[1]?.default;
+---
+
+{
+  photo ? (
+    <Image
+      src={photo}
+      alt={alt}
+      class={className}
+      widths={[480, 800, 1200]}
+      sizes="(min-width: 60rem) 50vw, 100vw"
+      loading="lazy"
+      style={`aspect-ratio: ${ratio}; object-fit: cover; width: 100%;`}
+    />
+  ) : (
+    <PlaceholderPhoto label={label} ratio={ratio} class={className} />
+  )
+}
