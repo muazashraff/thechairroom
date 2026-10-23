@@ -1,24 +1,26 @@
 # Photo credits
 
-No stock photography is currently used on this site.
+Three stock photos are currently in use, sourced from Pexels (free
+licence, no attribution required — credited below anyway as good
+practice). They're the closest free-licence matches found for wooden
+chiavari chairs with rectangular tables; none shows the exact cream
+wood / grey pad finish Muaz hires out, so they're a placeholder
+upgrade, not a final choice. Swap them for real photos whenever
+possible — see `PHOTOS.md`.
 
-Before building this site, free-licence libraries (Unsplash and Pexels) were
-searched for cream/beige wooden chiavari chairs with grey seat pads — the
-exact stock Muaz hires out. No accurate match was found: free-licence results
-for "chiavari chair" skew to white resin, gold or clear chairs styled for
-luxury weddings (all on the banned list for this site), and plain "wooden
-chair" results are generic dining/church/classroom chairs with the wrong
-silhouette entirely. Real natural-wood chiavari product photography exists,
-but only from commercial rental companies — not under a free licence.
+| File | Source | Photographer | Licence |
+| --- | --- | --- | --- |
+| `src/assets/images/hero/full-setup.jpg` | [pexels.com/photo/14703709](https://www.pexels.com/photo/wedding-table-in-narrow-corridor-14703709/) | Soulseeker | Pexels License |
+| `src/assets/images/gallery/table-setup.jpg` | [pexels.com/photo/14703704](https://www.pexels.com/photo/decoration-on-white-table-for-wedding-14703704/) | Soulseeker | Pexels License |
+| `src/assets/images/gallery/row-of-chairs.jpg` | [pexels.com/photo/1082024](https://www.pexels.com/photo/white-chairs-1082024/) | Jeremy Wong | Pexels License |
 
-Rather than use a photo that looks wrong, every image slot on the site is a
-labelled placeholder (see `PHOTOS.md` for exactly what to shoot and where
-each file goes).
+These three all show white/limewashed wooden chiavari chairs (classic
+spindle-back) — close enough in style and material to read correctly
+for a chair-hire business, even though the colour isn't an exact match
+for Muaz's cream/grey stock.
 
-If real photos are sourced from a free-licence library in future, list each
-one here with:
-
-- File used (path in `src/assets/images/...`)
-- Source URL
-- Photographer name
-- Licence (and any attribution it requires)
+Remaining slots (`gallery/full-setup`, `gallery/wood-closeup`,
+`gallery/seatpad-closeup`, `gallery/chairs-stacked`) are still labelled
+placeholders — no accurate free-licence match was found for a close-up
+of chiavari wood grain or a grey seat pad specifically. See
+`PHOTOS.md` for exactly what to shoot to fill them.
