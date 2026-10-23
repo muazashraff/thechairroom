@@ -1,12 +1,15 @@
 ---
 import { business } from "../data/business";
+import CallIcon from "./CallIcon.astro";
 ---
 
 <header class="header">
   <div class="wrap header__inner">
     <a href="/" class="header__mark">{business.name}</a>
     <div class="header__actions">
-      <a href={business.phoneHref} class="header__phone">{business.phoneDisplay}</a>
+      <a href={business.phoneHref} class="header__call" aria-label={`Call ${business.phoneDisplay}`} title={business.phoneDisplay}>
+        <CallIcon class="header__call-icon" />
+      </a>
       <a href="/book" class="btn btn--primary header__book">Book your chairs</a>
     </div>
   </div>
@@ -42,13 +45,25 @@ import { business } from "../data/business";
     gap: var(--space-3);
   }
 
-  .header__phone {
-    font-size: 0.9375rem;
-    font-weight: 600;
+  .header__call {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    color: var(--ink);
   }
 
-  .header__phone:hover {
+  .header__call:hover {
+    border-color: var(--ink);
     color: var(--accent-text);
+  }
+
+  .header__call-icon {
+    width: 1.125rem;
+    height: 1.125rem;
   }
 
   .header__book {
@@ -57,10 +72,6 @@ import { business } from "../data/business";
   }
 
   @media (max-width: 36rem) {
-    .header__phone {
-      display: none;
-    }
-
     .header__book {
       padding: 0.55em 1em;
     }
