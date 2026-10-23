@@ -163,7 +163,7 @@ export function buildWhatsAppMessage(details: BookingDetails): string {
       : "Delivery & collection: No — I'll collect";
 
   const lines = [
-    "Hi, I'd like to book with The Chair Room.",
+    `Hi, I'd like to book with ${business.name}.`,
     "",
     `Name: ${details.name}`,
     `Phone: ${details.phone}`,

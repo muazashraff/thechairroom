@@ -1,4 +1,4 @@
-# The Chair Room
+# The Chairs Room
 
 Chair & table hire in Bradford and Leeds. Static site built with Astro,
 plain CSS and a small vanilla TypeScript booking form — no backend,

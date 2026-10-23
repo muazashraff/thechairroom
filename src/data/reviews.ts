@@ -1,6 +1,8 @@
 // Real WhatsApp reviews go here — first names only, no phone numbers.
 // Every entry below is a placeholder. The build logs a warning until they're replaced.
 
+import { business } from "./business";
+
 export interface Review {
   name: string;
   text: string;
@@ -39,6 +41,6 @@ export const hasPlaceholderReviews = reviews.some((r) => r.placeholder);
 
 if (hasPlaceholderReviews && import.meta.env.PROD) {
   console.warn(
-    "[The Chair Room] WARNING: placeholder reviews are still in src/data/reviews.ts. Replace them with real customer reviews before launch.",
+    `[${business.name}] WARNING: placeholder reviews are still in src/data/reviews.ts. Replace them with real customer reviews before launch.`,
   );
 }
