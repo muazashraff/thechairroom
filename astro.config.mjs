@@ -4,6 +4,6 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://thechairsroom.pages.dev',
+  site: 'https://thechairsroom.muazashraf100.workers.dev',
   integrations: [sitemap()],
 });

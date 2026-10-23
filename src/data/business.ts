@@ -47,8 +47,8 @@ export const business = {
   },
 
   // Update this alongside astro.config.mjs `site` and public/robots.txt
-  // once the Cloudflare Pages / custom domain URL is final.
-  siteUrl: "https://thechairsroom.pages.dev",
+  // once a custom domain is connected.
+  siteUrl: "https://thechairsroom.muazashraf100.workers.dev",
 
   seo: {
     titleHome: "Chair & Table Hire Bradford & Leeds | The Chairs Room",
