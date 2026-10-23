@@ -1,0 +1,82 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { business } from "../data/business";
+
+const sections = [
+  {
+    heading: "Hire period",
+    body: "The standard hire is 1–2 days, covering your hire date and return date. Need longer? Tell us on WhatsApp and we'll confirm a price.",
+  },
+  {
+    heading: "Collection and return",
+    body: `Collection is from ${business.collectionTown} — the exact point is shared once your booking is confirmed on WhatsApp. PLACEHOLDER: confirm collection time windows.`,
+  },
+  {
+    heading: "Delivery",
+    body: "We deliver and collect across West Yorkshire on request. Delivery & collection is a separate charge, quoted on WhatsApp once we know your postcode and dates.",
+  },
+  {
+    heading: "Damage and loss",
+    body: "PLACEHOLDER: damage and loss policy, including cost per damaged or missing chair/table.",
+  },
+  {
+    heading: "Cleaning",
+    body: "PLACEHOLDER: cleaning expectation before chairs and tables are returned.",
+  },
+  {
+    heading: "Cancellations",
+    body: "PLACEHOLDER: cancellation and rescheduling policy.",
+  },
+];
+---
+
+<BaseLayout title={business.seo.titleTerms} description={business.seo.descriptionTerms} path="/terms">
+  <Header />
+  <main id="main">
+    <section class="section terms">
+      <div class="wrap">
+        <h1>Hire terms</h1>
+        <p class="terms__lede">
+          Plain-English terms for hiring with {business.name}. Numbers marked PLACEHOLDER are still
+          to be confirmed.
+        </p>
+        <div class="terms__list">
+          {sections.map((section) => (
+            <section class="terms__item">
+              <h2>{section.heading}</h2>
+              <p>{section.body}</p>
+            </section>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .terms__lede {
+    margin-top: var(--space-2);
+    color: var(--ink-muted);
+    max-width: 34rem;
+  }
+
+  .terms__list {
+    margin-top: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    max-width: 42rem;
+  }
+
+  .terms__item h2 {
+    margin-bottom: var(--space-1);
+    font-size: 1.25rem;
+  }
+
+  .terms__item p {
+    color: var(--ink-muted);
+  }
+</style>
