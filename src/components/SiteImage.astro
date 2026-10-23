@@ -35,7 +35,7 @@ const photo = match?.[1]?.default;
       widths={[480, 800, 1200]}
       sizes="(min-width: 60rem) 50vw, 100vw"
       loading="lazy"
-      style={`aspect-ratio: ${ratio}; object-fit: cover; width: 100%;`}
+      style={`aspect-ratio: ${ratio}; object-fit: cover; width: 100%; height: auto;`}
     />
   ) : (
     <PlaceholderPhoto label={label} ratio={ratio} class={className} />

@@ -1,5 +1,4 @@
 ---
-import RateCard from "./RateCard.astro";
 import SiteImage from "./SiteImage.astro";
 import { business } from "../data/business";
 ---
@@ -11,12 +10,8 @@ import { business } from "../data/business";
         Chair &amp; table hire in <em>{business.areas[0]}</em> and <em>{business.areas[1]}</em>.
       </h1>
       <p class="hero__lede">
-        Wooden chiavari chairs and 6ft tables for weddings, mehndis, birthdays and everything in
-        between. Collect from {business.collectionTown}, or we'll deliver.
+        Wooden chiavari chairs and 6ft tables for weddings, mehndis and birthdays. Collect from {business.collectionTown}, or we'll deliver.
       </p>
-      <div class="hero__rate">
-        <RateCard />
-      </div>
       <div class="hero__actions">
         <a href="/book" class="btn btn--primary">Book your chairs</a>
         <a href={business.phoneHref} class="text-link hero__call">
@@ -27,7 +22,7 @@ import { business } from "../data/business";
     <div class="hero__photo">
       <SiteImage
         name="hero/full-setup"
-        alt="The Chair Room's chiavari chairs and tables set up for an event"
+        alt={`${business.name}'s chiavari chairs and tables set up for an event`}
         label="wide shot of a full chair and table setup in a hall, daylight"
         ratio="4 / 5"
       />
@@ -58,10 +53,6 @@ import { business } from "../data/business";
     max-width: 32rem;
     font-size: 1.125rem;
     color: var(--ink-muted);
-  }
-
-  .hero__rate {
-    margin-top: var(--space-4);
   }
 
   .hero__actions {
