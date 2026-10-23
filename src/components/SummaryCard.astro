@@ -1,0 +1,103 @@
+---
+import { business } from "../data/business";
+---
+
+<aside class="summary" id="booking-summary" aria-label="Booking summary">
+  <p class="summary__label small-caps">Your booking</p>
+
+  <dl class="summary__lines tabular">
+    <div class="summary__row" data-summary-dates hidden>
+      <dt>Dates</dt>
+      <dd data-summary-dates-value></dd>
+    </div>
+    <div class="summary__row" data-summary-chairs hidden>
+      <dt>Chairs</dt>
+      <dd data-summary-chairs-value></dd>
+    </div>
+    <div class="summary__row" data-summary-tables hidden>
+      <dt>Tables</dt>
+      <dd data-summary-tables-value></dd>
+    </div>
+  </dl>
+
+  <p class="summary__fullset" data-summary-fullset hidden>Full set</p>
+
+  <p class="summary__total" data-summary-total>
+    Add chairs or tables to see your total.
+  </p>
+
+  <p class="summary__delivery" data-summary-delivery hidden>
+    Delivery &amp; collection: we'll quote this on WhatsApp
+  </p>
+
+  <p class="summary__footnote">
+    Booking isn't confirmed until we reply on WhatsApp. Delivery, if you choose it, is quoted separately — never shown here.
+  </p>
+</aside>
+
+<style>
+  .summary {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: var(--space-3);
+  }
+
+  .summary__label {
+    margin-bottom: var(--space-2);
+  }
+
+  .summary__lines {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .summary__row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+    font-size: 0.9375rem;
+    padding: 0.2rem 0;
+    border-bottom: 1px dotted var(--rule);
+  }
+
+  .summary__row dt {
+    color: var(--ink-muted);
+  }
+
+  .summary__fullset {
+    margin-top: var(--space-2);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--accent-text);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .summary__total {
+    margin-top: var(--space-3);
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+  }
+
+  .summary__delivery {
+    margin-top: var(--space-2);
+    font-size: 0.875rem;
+    color: var(--ink-muted);
+  }
+
+  .summary__footnote {
+    margin-top: var(--space-3);
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--rule);
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+  }
+
+  @media (min-width: 60rem) {
+    .summary {
+      position: sticky;
+      top: calc(4.5rem);
+    }
+  }
+</style>

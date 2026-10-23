@@ -1,0 +1,106 @@
+---
+import { business } from "../data/business";
+
+interface Props {
+  id: string;
+  label: string;
+  max: number;
+  value?: number;
+  itemWord: string; // e.g. "chairs" / "tables", used in the over-limit notice
+  noticeSuffix?: string;
+}
+
+const { id, label, max, value = 0, itemWord, noticeSuffix = "" } = Astro.props;
+---
+
+<div class="stepper-field">
+  <label class="stepper-field__label" for={`${id}-input`}>{label}</label>
+  <div class="stepper">
+    <button type="button" class="stepper__btn" data-stepper-minus data-target={id} aria-label={`Fewer ${label}`}>
+      −
+    </button>
+    <input
+      type="number"
+      inputmode="numeric"
+      id={`${id}-input`}
+      name={id}
+      class="stepper__input tabular"
+      min="0"
+      step="1"
+      value={value}
+      data-stepper-input
+      data-target={id}
+    />
+    <button type="button" class="stepper__btn" data-stepper-plus data-target={id} aria-label={`More ${label}`}>
+      +
+    </button>
+  </div>
+  <p class="stepper-field__notice" data-limit-notice={id} hidden>
+    Need more than {max} {itemWord}? Give us a call on <a href={business.phoneHref}>{business.phoneDisplay}</a>{noticeSuffix}
+  </p>
+</div>
+
+<style>
+  .stepper-field__label {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    margin-bottom: var(--space-1);
+  }
+
+  .stepper {
+    display: inline-flex;
+    align-items: stretch;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+    width: 100%;
+    max-width: 14rem;
+  }
+
+  .stepper__btn {
+    flex: 0 0 3rem;
+    font-size: 1.25rem;
+    background: var(--paper-deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stepper__btn:hover {
+    background: var(--rule);
+  }
+
+  .stepper__input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: none;
+    border-left: 1px solid var(--rule);
+    border-right: 1px solid var(--rule);
+    text-align: center;
+    font-size: 1.0625rem;
+    -moz-appearance: textfield;
+  }
+
+  .stepper__input::-webkit-outer-spin-button,
+  .stepper__input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .stepper-field__notice {
+    margin-top: var(--space-2);
+    padding: var(--space-2);
+    background: var(--paper-deep);
+    border: 1px solid var(--wood);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    max-width: 24rem;
+  }
+
+  .stepper-field__notice a {
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--wood);
+  }
+</style>

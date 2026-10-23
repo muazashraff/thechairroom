@@ -1,0 +1,84 @@
+---
+interface Props {
+  id: string;
+  label: string;
+  type?: string;
+  name?: string;
+  placeholder?: string;
+  autocomplete?: string;
+  required?: boolean;
+  textarea?: boolean;
+}
+
+const {
+  id,
+  label,
+  type = "text",
+  name = id,
+  placeholder,
+  autocomplete,
+  required = false,
+  textarea = false,
+} = Astro.props;
+---
+
+<div class="field">
+  <label class="field__label" for={id}>{label}</label>
+  {
+    textarea ? (
+      <textarea id={id} name={name} class="field__input field__input--textarea" rows="4" placeholder={placeholder} />
+    ) : (
+      <input
+        id={id}
+        name={name}
+        type={type}
+        class="field__input"
+        placeholder={placeholder}
+        autocomplete={autocomplete}
+        required={required}
+      />
+    )
+  }
+  <p class="field__error" data-error-for={name} hidden></p>
+</div>
+
+<style>
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .field__label {
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+
+  .field__input {
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 0.75em 0.9em;
+    background: var(--paper);
+    font-size: 1rem;
+    width: 100%;
+  }
+
+  .field__input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  .field__input--textarea {
+    resize: vertical;
+    font-family: var(--font-sans);
+  }
+
+  .field__error {
+    font-size: 0.8125rem;
+    color: #a13d2c;
+  }
+
+  .field--invalid .field__input {
+    border-color: #a13d2c;
+  }
+</style>

@@ -1,0 +1,67 @@
+---
+import { business } from "../data/business";
+---
+
+<fieldset class="delivery">
+  <legend class="delivery__legend">Delivery</legend>
+  <div class="delivery__options">
+    <label class="delivery__card">
+      <input type="radio" name="delivery" value="collect" checked />
+      <span class="delivery__title">I'll collect from {business.collectionTown}</span>
+    </label>
+    <label class="delivery__card">
+      <input type="radio" name="delivery" value="deliver" />
+      <span class="delivery__title">Deliver &amp; collect for me</span>
+      <span class="delivery__note">Separate charge — we'll message you the price.</span>
+    </label>
+  </div>
+</fieldset>
+
+<style>
+  .delivery__legend {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    padding: 0;
+    margin-bottom: var(--space-2);
+  }
+
+  .delivery__options {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  @media (min-width: 30rem) {
+    .delivery__options {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .delivery__card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: var(--space-3);
+    cursor: pointer;
+  }
+
+  .delivery__card:has(input:checked) {
+    border-color: var(--ink);
+    background: var(--paper-deep);
+  }
+
+  .delivery__card:has(input:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .delivery__title {
+    font-weight: 600;
+  }
+
+  .delivery__note {
+    font-size: 0.8125rem;
+    color: var(--ink-muted);
+  }
+</style>

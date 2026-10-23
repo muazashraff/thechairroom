@@ -1,0 +1,480 @@
+---
+import Field from "./Field.astro";
+import Stepper from "./Stepper.astro";
+import DeliveryChoice from "./DeliveryChoice.astro";
+import SummaryCard from "./SummaryCard.astro";
+import { business } from "../data/business";
+---
+
+<div class="booking-grid">
+  <form id="booking-form" class="booking-form" novalidate>
+    <section class="form-section">
+      <h2>Your hire</h2>
+
+      <div class="form-row form-row--dates">
+        <div class="field">
+          <label class="field__label" for="hireDate">Hire date</label>
+          <input id="hireDate" name="hireDate" type="date" class="field__input" required />
+          <p class="field__error" data-error-for="hireDate" hidden></p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="returnDate">Return date</label>
+          <input id="returnDate" name="returnDate" type="date" class="field__input" required />
+          <p class="field__error" data-error-for="returnDate" hidden></p>
+        </div>
+      </div>
+
+      <div class="form-row form-row--steppers">
+        <Stepper id="chairs" label="Number of chairs" max={business.stock.maxChairs} itemWord="chairs" noticeSuffix=" and we'll sort it." />
+        <Stepper id="tables" label="Number of tables" max={business.stock.maxTables} itemWord="tables" />
+      </div>
+      <p class="field__error" data-error-for="items" hidden></p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="form-section">
+      <h2>Your details</h2>
+      <div class="form-row">
+        <Field id="postcode" label="Postcode" autocomplete="postal-code" required />
+        <Field id="address" label="Address line" autocomplete="street-address" required />
+      </div>
+      <div class="form-row">
+        <Field id="name" label="Full name" autocomplete="name" required />
+        <Field id="phone" label="Phone number" type="tel" autocomplete="tel" placeholder="07123 456789" required />
+      </div>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="form-section">
+      <DeliveryChoice />
+    </section>
+
+    <hr class="rule" />
+
+    <section class="form-section">
+      <h2>Anything else</h2>
+      <Field id="notes" label="Notes (optional)" textarea />
+
+      <label class="checkbox-row">
+        <input type="checkbox" id="terms" name="terms" required />
+        <span>I agree to the <a href="/terms" class="text-link" target="_blank" rel="noopener">hire terms</a></span>
+      </label>
+      <p class="field__error" data-error-for="terms" hidden></p>
+    </section>
+
+    <button type="submit" class="btn btn--primary btn--block" id="submit-btn">
+      Send booking on WhatsApp
+    </button>
+
+    <div class="confirmation" id="confirmation" hidden>
+      <p class="confirmation__title">
+        Your message is ready in WhatsApp — just press send.
+      </p>
+      <p class="confirmation__note">
+        If WhatsApp didn't open, call or message {business.phoneDisplay}.
+      </p>
+      <button type="button" class="text-link" id="copy-message-btn">Copy message</button>
+      <p class="confirmation__copied" id="copied-note" hidden>Copied.</p>
+    </div>
+  </form>
+
+  <SummaryCard />
+</div>
+
+<div class="mobile-summary-bar" id="mobile-summary-bar" hidden>
+  <span class="mobile-summary-bar__total tabular" data-mobile-total></span>
+</div>
+
+<script>
+  import {
+    calcPricing,
+    isOverChairLimit,
+    isOverTableLimit,
+    validateName,
+    validatePhone,
+    validatePostcode,
+    validateAddress,
+    validateDates,
+    validateItems,
+    formatDateLong,
+    buildWhatsAppMessage,
+    buildWhatsAppUrl,
+    type BookingDetails,
+  } from "../lib/booking-logic";
+  import { business } from "../data/business";
+
+  const form = document.getElementById("booking-form") as HTMLFormElement;
+  const hireDateInput = document.getElementById("hireDate") as HTMLInputElement;
+  const returnDateInput = document.getElementById("returnDate") as HTMLInputElement;
+  const chairsInput = document.getElementById("chairs-input") as HTMLInputElement;
+  const tablesInput = document.getElementById("tables-input") as HTMLInputElement;
+  const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement;
+  const confirmation = document.getElementById("confirmation") as HTMLElement;
+  const copyBtn = document.getElementById("copy-message-btn") as HTMLButtonElement;
+  const copiedNote = document.getElementById("copied-note") as HTMLElement;
+
+  const todayIso = new Date().toISOString().slice(0, 10);
+  hireDateInput.min = todayIso;
+  hireDateInput.value = todayIso;
+
+  function dayAfter(iso: string): string {
+    const d = new Date(`${iso}T00:00:00Z`);
+    d.setUTCDate(d.getUTCDate() + 1);
+    return d.toISOString().slice(0, 10);
+  }
+
+  returnDateInput.min = dayAfter(hireDateInput.value);
+  returnDateInput.value = dayAfter(hireDateInput.value);
+
+  hireDateInput.addEventListener("change", () => {
+    const minReturn = dayAfter(hireDateInput.value);
+    returnDateInput.min = minReturn;
+    if (returnDateInput.value < minReturn) returnDateInput.value = minReturn;
+    updateSummary();
+  });
+  returnDateInput.addEventListener("change", updateSummary);
+
+  // --- Steppers -------------------------------------------------------
+
+  function setupStepper(input: HTMLInputElement, max: number) {
+    const id = input.dataset.target!;
+    const notice = document.querySelector(`[data-limit-notice="${id}"]`) as HTMLElement;
+
+    function clampDisplay() {
+      const value = Number(input.value || 0);
+      const over = id === "chairs" ? isOverChairLimit(value) : isOverTableLimit(value);
+      notice.hidden = !over;
+      submitBtn.disabled = isOverChairLimit(Number(chairsInput.value || 0)) || isOverTableLimit(Number(tablesInput.value || 0));
+      updateSummary();
+    }
+
+    document.querySelectorAll(`[data-stepper-minus][data-target="${id}"]`).forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const next = Math.max(0, Number(input.value || 0) - 1);
+        input.value = String(next);
+        clampDisplay();
+      });
+    });
+
+    document.querySelectorAll(`[data-stepper-plus][data-target="${id}"]`).forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const next = Math.max(0, Number(input.value || 0) + 1);
+        input.value = String(next);
+        clampDisplay();
+      });
+    });
+
+    input.addEventListener("input", () => {
+      if (input.value !== "" && Number(input.value) < 0) input.value = "0";
+      clampDisplay();
+    });
+  }
+
+  setupStepper(chairsInput, business.stock.maxChairs);
+  setupStepper(tablesInput, business.stock.maxTables);
+
+  // --- Live summary -----------------------------------------------------
+
+  const summaryDates = document.querySelector("[data-summary-dates]") as HTMLElement;
+  const summaryDatesValue = document.querySelector("[data-summary-dates-value]") as HTMLElement;
+  const summaryChairs = document.querySelector("[data-summary-chairs]") as HTMLElement;
+  const summaryChairsValue = document.querySelector("[data-summary-chairs-value]") as HTMLElement;
+  const summaryTables = document.querySelector("[data-summary-tables]") as HTMLElement;
+  const summaryTablesValue = document.querySelector("[data-summary-tables-value]") as HTMLElement;
+  const summaryFullset = document.querySelector("[data-summary-fullset]") as HTMLElement;
+  const summaryTotal = document.querySelector("[data-summary-total]") as HTMLElement;
+  const summaryDelivery = document.querySelector("[data-summary-delivery]") as HTMLElement;
+  const mobileBar = document.getElementById("mobile-summary-bar") as HTMLElement;
+  const mobileTotal = document.querySelector("[data-mobile-total]") as HTMLElement;
+
+  function updateSummary() {
+    const chairs = Number(chairsInput.value || 0);
+    const tables = Number(tablesInput.value || 0);
+    const hireDate = hireDateInput.value;
+    const returnDate = returnDateInput.value;
+    const { currencySymbol } = business.pricing;
+
+    if (chairs <= 0 && tables <= 0) {
+      summaryDates.hidden = true;
+      summaryChairs.hidden = true;
+      summaryTables.hidden = true;
+      summaryFullset.hidden = true;
+      summaryDelivery.hidden = true;
+      summaryTotal.textContent = "Add chairs or tables to see your total.";
+      mobileBar.hidden = true;
+      return;
+    }
+
+    const pricing = calcPricing(hireDate, returnDate, chairs, tables);
+
+    summaryDates.hidden = false;
+    summaryDatesValue.textContent = `${formatDateLong(hireDate)} → ${formatDateLong(returnDate)} (${pricing.days} day${pricing.days === 1 ? "" : "s"})`;
+
+    summaryChairs.hidden = chairs <= 0;
+    if (chairs > 0) {
+      summaryChairsValue.textContent = `${chairs} × ${currencySymbol}${business.pricing.chairPrice} = ${currencySymbol}${pricing.chairsCost}`;
+    }
+
+    summaryTables.hidden = tables <= 0;
+    if (tables > 0) {
+      summaryTablesValue.textContent = `${tables} × ${currencySymbol}${business.pricing.tablePrice} = ${currencySymbol}${pricing.tablesCost}`;
+    }
+
+    summaryFullset.hidden = !pricing.isFullSet;
+
+    if (pricing.isLongHire) {
+      summaryTotal.textContent = "Hire longer than 2 days — we'll confirm the price on WhatsApp.";
+      mobileTotal.textContent = "Longer than 2 days — confirmed on WhatsApp";
+    } else {
+      summaryTotal.textContent = `Hire total: ${currencySymbol}${pricing.total}`;
+      mobileTotal.textContent = `Total: ${currencySymbol}${pricing.total}`;
+    }
+    mobileBar.hidden = false;
+
+    const deliverySelected = (form.elements.namedItem("delivery") as RadioNodeList)?.value === "deliver";
+    summaryDelivery.hidden = !deliverySelected;
+  }
+
+  form.querySelectorAll('input[name="delivery"]').forEach((el) => el.addEventListener("change", updateSummary));
+
+  updateSummary();
+
+  // --- Validation + submit ----------------------------------------------
+
+  function setError(name: string, message: string | null) {
+    const el = document.querySelector(`[data-error-for="${name}"]`) as HTMLElement | null;
+    if (!el) return;
+    if (message) {
+      el.textContent = message;
+      el.hidden = false;
+    } else {
+      el.hidden = true;
+      el.textContent = "";
+    }
+  }
+
+  function getValue(name: string): string {
+    return (form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement)?.value ?? "";
+  }
+
+  function collectDetails(): BookingDetails {
+    const delivery = (form.elements.namedItem("delivery") as RadioNodeList)?.value === "deliver" ? "deliver" : "collect";
+    return {
+      hireDate: getValue("hireDate"),
+      returnDate: getValue("returnDate"),
+      chairs: Number(chairsInput.value || 0),
+      tables: Number(tablesInput.value || 0),
+      name: getValue("name"),
+      phone: getValue("phone"),
+      postcode: getValue("postcode"),
+      address: getValue("address"),
+      delivery,
+      notes: getValue("notes"),
+    };
+  }
+
+  function saveDraft(details: BookingDetails) {
+    try {
+      sessionStorage.setItem("chairroom-booking-draft", JSON.stringify(details));
+    } catch {
+      // sessionStorage unavailable — not critical, continue silently
+    }
+  }
+
+  function restoreDraft() {
+    try {
+      const raw = sessionStorage.getItem("chairroom-booking-draft");
+      if (!raw) return;
+      const details = JSON.parse(raw) as BookingDetails;
+      if (details.hireDate) hireDateInput.value = details.hireDate;
+      if (details.returnDate) returnDateInput.value = details.returnDate;
+      if (details.chairs) chairsInput.value = String(details.chairs);
+      if (details.tables) tablesInput.value = String(details.tables);
+      if (details.name) (form.elements.namedItem("name") as HTMLInputElement).value = details.name;
+      if (details.phone) (form.elements.namedItem("phone") as HTMLInputElement).value = details.phone;
+      if (details.postcode) (form.elements.namedItem("postcode") as HTMLInputElement).value = details.postcode;
+      if (details.address) (form.elements.namedItem("address") as HTMLInputElement).value = details.address;
+      if (details.notes) (form.elements.namedItem("notes") as HTMLTextAreaElement).value = details.notes;
+      if (details.delivery === "deliver") {
+        const radio = form.querySelector('input[name="delivery"][value="deliver"]') as HTMLInputElement;
+        if (radio) radio.checked = true;
+      }
+      updateSummary();
+    } catch {
+      // ignore corrupt/unavailable draft
+    }
+  }
+
+  restoreDraft();
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const details = collectDetails();
+
+    const errors: Record<string, string | null> = {
+      hireDate: null,
+      returnDate: null,
+      items: validateItems(details.chairs, details.tables),
+      postcode: validatePostcode(details.postcode),
+      address: validateAddress(details.address),
+      name: validateName(details.name),
+      phone: validatePhone(details.phone),
+      terms: (document.getElementById("terms") as HTMLInputElement).checked ? null : "Please agree to the hire terms.",
+    };
+
+    const dateError = validateDates(details.hireDate, details.returnDate);
+    if (dateError) errors.hireDate = dateError;
+
+    Object.entries(errors).forEach(([name, message]) => setError(name, message));
+
+    const overLimit = isOverChairLimit(details.chairs) || isOverTableLimit(details.tables);
+    const hasErrors = Object.values(errors).some(Boolean) || overLimit;
+
+    if (hasErrors) {
+      const firstInvalid = form.querySelector('[data-error-for]:not([hidden])');
+      firstInvalid?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
+    saveDraft(details);
+
+    const url = buildWhatsAppUrl(details);
+    const link = document.createElement("a");
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.click();
+
+    confirmation.hidden = false;
+    confirmation.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    copyBtn.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(buildWhatsAppMessage(details));
+        copiedNote.hidden = false;
+      } catch {
+        copiedNote.hidden = true;
+      }
+    };
+  });
+</script>
+
+<style>
+  .booking-grid {
+    display: grid;
+    gap: var(--space-4);
+    align-items: start;
+  }
+
+  @media (min-width: 60rem) {
+    .booking-grid {
+      grid-template-columns: 1.4fr 1fr;
+      gap: var(--space-5);
+    }
+  }
+
+  .booking-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .mobile-summary-bar {
+    display: none;
+  }
+
+  @media (max-width: 59.99rem) {
+    .booking-grid {
+      padding-bottom: 4rem;
+    }
+
+    .mobile-summary-bar {
+      display: block;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--paper);
+      border-top: 1px solid var(--rule);
+      padding: var(--space-2) var(--space-3);
+      z-index: 40;
+    }
+
+    .mobile-summary-bar[hidden] {
+      display: none;
+    }
+
+    .mobile-summary-bar__total {
+      font-family: var(--font-serif);
+      font-size: 1.125rem;
+    }
+  }
+
+  .form-section h2 {
+    margin-bottom: var(--space-3);
+  }
+
+  .form-row {
+    display: grid;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+
+  @media (min-width: 36rem) {
+    .form-row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .form-row--steppers {
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 36rem) {
+    .form-row--steppers {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .checkbox-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6em;
+    margin-top: var(--space-3);
+    font-size: 0.9375rem;
+  }
+
+  .checkbox-row input {
+    margin-top: 0.3em;
+  }
+
+  .confirmation {
+    border: 1px solid var(--accent);
+    background: var(--paper-deep);
+    border-radius: var(--radius);
+    padding: var(--space-3);
+  }
+
+  .confirmation__title {
+    font-weight: 600;
+  }
+
+  .confirmation__note {
+    margin-top: 0.3em;
+    color: var(--ink-muted);
+    font-size: 0.9375rem;
+  }
+
+  #copy-message-btn {
+    margin-top: var(--space-2);
+  }
+
+  .confirmation__copied {
+    margin-top: 0.3em;
+    font-size: 0.8125rem;
+    color: var(--accent-text);
+  }
+</style>
